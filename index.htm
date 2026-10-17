@@ -40,7 +40,7 @@
   .oculto { display: none; }
   .msg-status { margin-top: 10px; font-weight: 600; color: var(--cor); }
 
-  /* Galeria: loop infinito apenas automático */
+  /* Galeria: loop infinito apenas automático (mais suave via transform) */
   .galeria-wrapper { position: relative; }
   .galeria {
     overflow: hidden; /* impede rolagem manual */
@@ -52,7 +52,7 @@
     gap: 16px;
     align-items: center;
     will-change: transform;
-    animation: scroll var(--scroll-duration) linear infinite;
+    transform: translateX(0);
   }
   .galeria-item {
     flex: 0 0 auto;
@@ -64,14 +64,9 @@
   }
   .galeria-item img { width: 100%; height: 240px; object-fit: cover; display: block; }
 
-  /* esconde qualquer scrollbar e desativa interação do usuário */
+  /* esconde interação do usuário */
   .galeria, .galeria * { pointer-events: none; }
   .galeria::-webkit-scrollbar { display: none; }
-
-  @keyframes scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
 
   @media (max-width: 600px) { .hero h1 { font-size: 2.6rem; } .galeria-item { width: 260px; } }
 </style>
@@ -175,23 +170,51 @@ function escapar(t) {
   return d.innerHTML;
 }
 
-// Inicia galeria em loop infinito apenas automático (sem interação do usuário)
-function iniciarLoopCSS() {
-  const track = $('galeria-track');
+// Loop suave via transform + duplicação; evita "pulo" no reinício
+function iniciarLoopSuave() {
+  const track = document.getElementById('galeria-track');
   if (!track) return;
-  // duplica o conteúdo (HTML) para permitir animação de 0 -> -50%
+
+  // duplica os itens (HTML) para termos sequência contínua
   track.innerHTML = track.innerHTML + track.innerHTML;
 
-  // opcional: ajustar duração com base na largura (mantém velocidade consistente)
-  // aqui calculamos uma duração proporcional ao número de itens e largura do item
-  const item = track.querySelector('.galeria-item');
-  if (item) {
-    const itemWidth = item.getBoundingClientRect().width + 16; // inclui gap
-    const totalItems = track.children.length;
-    // base: cada 1000px leva 6s (ajuste conforme preferir)
-    const duration = Math.max(12, Math.round((itemWidth * totalItems) / 1000 * 6));
-    track.style.animationDuration = duration + 's';
-  }
+  const imgs = track.querySelectorAll('img');
+  // espera imagens carregarem para medir larguras corretamente
+  const imgPromises = Array.from(imgs).map(img => new Promise(res => {
+    if (img.complete) return res();
+    img.onload = img.onerror = res;
+  }));
+
+  Promise.all(imgPromises).then(() => {
+    // calcula largura total do conjunto original (antes da duplicação)
+    const children = Array.from(track.children);
+    const half = children.length / 2;
+    let totalWidth = 0;
+    for (let i = 0; i < half; i++) {
+      const w = children[i].getBoundingClientRect().width;
+      // gap entre itens é 16px (CSS)
+      totalWidth += w + 16;
+    }
+
+    // animação por requestAnimationFrame usando transform (mais suave)
+    let offset = 0;
+    const speed = 0.4; // pixels por frame — ajuste para alterar velocidade
+    let rafId = null;
+
+    function step() {
+      offset += speed;
+      if (offset >= totalWidth) offset -= totalWidth; // reinicia sem pulo
+      track.style.transform = `translateX(${-offset}px)`;
+      rafId = requestAnimationFrame(step);
+    }
+
+    // inicia
+    track.style.willChange = 'transform';
+    step();
+
+    // opcional: expõe para depuração
+    track._stop = () => cancelAnimationFrame(rafId);
+  });
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -201,7 +224,7 @@ window.addEventListener('DOMContentLoaded', () => {
   carregarMensagens();
   $('formMensagem').addEventListener('submit', enviarMensagem);
   $('formPagamento').addEventListener('submit', enviarPagamento);
-  iniciarLoopCSS();
+  iniciarLoopSuave();
 });
 </script>
 
@@ -213,7 +236,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <div><span id="dias">0</span>dias</div>
     <div><span id="horas">0</span>horas</div>
     <div><span id="minutos">0</span>min</div>
-    <div><span id="segundos">0</span>seg</div>
+    <div><span id="segundos">0</span>seg></div>
   </div>
 </header>
 
