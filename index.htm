@@ -48,12 +48,12 @@
 <script>
 /* ===== EDITE AQUI ===== */
 const CONFIG = {
-  noivos: 'Nome & Nome',
-  dataCasamento: '2027-05-15T16:00:00-03:00',
-  dataExibicao: '15 de maio de 2027',
+  noivos: 'Aline & Porfírio',
+  dataCasamento: '2026-11-25T18:00:00-03:00',
+  dataExibicao: '25 de novembro de 2026',
   historia: 'Escreva aqui como vocês se conheceram. Pode ter quantos parágrafos quiser.',
-  cerimonia: { horario: '16h00', local: 'Nome do local', endereco: 'Rua, número, cidade' },
-  festa: { horario: 'Após a cerimônia', local: 'Nome do salão', endereco: 'Rua, número, cidade' },
+  cerimonia: { horario: '18h00', local: 'Igreja São José', endereco: 'Rua, número, cidade' },
+  festa: { horario: 'Após a cerimônia', local: 'Buscapé', endereco: 'Rua, número, cidade' },
   faq: [
     { p: 'Posso levar acompanhante?', r: 'Verifique o convite ou fale com a gente.' },
     { p: 'Qual o dress code?', r: 'Esporte fino.' }
@@ -195,12 +195,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <section>
   <h2>Lista de Presentes</h2>
-  <p style="text-align:center" class="aviso">Escolha uma cota, copie o Pix e, depois de pagar, marque como paga para registrarmos.</p>
+  <p style="text-align:center" class="aviso">Escolha uma cota, copie o Pix e, depois de pagar, registre aqui para a gente saber.</p>
   <div class="grid" id="listaCotas"></div>
   <div class="card" id="formPagamento" style="margin-top:28px">
     <h3>Registrar pagamento</h3>
-    <form id="formPagamento-form"></form>
-    <form id="formPagamentoInterno">
+    <form id="formPagamentoForm">
+      <input id="pagNome" placeholder="Seu nome" required maxlength="80">
+      <select id="selectCota"></select>
+      <input id="pagObs" placeholder="Observação (opcional)" maxlength="200">
+      <button type="submit">Registrar</button>
+      <p class="msg-status" id="statusPag"></p>
     </form>
   </div>
 </section>
