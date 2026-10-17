@@ -6,7 +6,7 @@
 <title>Nossa Renovação de Votos</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root { --cor: #8a6d5a; --fundo: #fbf8f4; --texto: #3b3330; }
+  :root { --cor: #8a6d5a; --fundo: #fbf8f4; --texto: #3b3330; --scroll-duration: 30s; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: Montserrat, sans-serif; color: var(--texto); background: var(--fundo); line-height: 1.7; }
   h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0 0 16px; }
@@ -24,7 +24,6 @@
   .contagem span { display: block; font-size: 1.8rem; font-family: 'Cormorant Garamond', serif; }
   .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 4px 18px rgba(0,0,0,.06); }
   .grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-  .galeria img { width: 100%; height: 240px; object-fit: cover; border-radius: 12px; }
   button, .botao {
     background: var(--cor); color: #fff; border: 0; padding: 10px 18px; border-radius: 8px;
     cursor: pointer; font-family: inherit; text-decoration: none; display: inline-block; font-size: .95rem;
@@ -41,37 +40,38 @@
   .oculto { display: none; }
   .msg-status { margin-top: 10px; font-weight: 600; color: var(--cor); }
 
-  /* Nova estilização para galeria horizontal rolante */
+  /* Galeria: loop infinito apenas automático */
   .galeria-wrapper { position: relative; }
   .galeria {
+    overflow: hidden; /* impede rolagem manual */
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -6px; /* alinha com o padding interno */
+  }
+  .galeria-track {
     display: flex;
     gap: 16px;
-    overflow-x: auto;
-    padding: 12px 6px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    will-change: transform;
+    animation: scroll var(--scroll-duration) linear infinite;
   }
-  .galeria::-webkit-scrollbar { height: 10px; }
-  .galeria::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
   .galeria-item {
     flex: 0 0 auto;
     width: 320px;
-    scroll-snap-align: center;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     background: #fff;
   }
   .galeria-item img { width: 100%; height: 240px; object-fit: cover; display: block; }
-  .galeria-controls {
-    position: absolute; top: 50%; left: 8px; right: 8px; transform: translateY(-50%); pointer-events: none;
-    display: flex; justify-content: space-between; align-items: center;
+
+  /* esconde qualquer scrollbar e desativa interação do usuário */
+  .galeria, .galeria * { pointer-events: none; }
+  .galeria::-webkit-scrollbar { display: none; }
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
-  .gal-btn {
-    pointer-events: auto; background: rgba(255,255,255,0.9); border: 0; width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .gal-btn svg { width: 18px; height: 18px; fill: var(--cor); }
 
   @media (max-width: 600px) { .hero h1 { font-size: 2.6rem; } .galeria-item { width: 260px; } }
 </style>
@@ -97,7 +97,6 @@ const CONFIG = {
     { id: 'C03', titulo: 'Passeio de barco', valor: 'R$ 200,00', pix: 'COLE_O_PIX_COPIA_E_COLA' }
   ]
 };
-/* ====================== */
 
 const $ = id => document.getElementById(id);
 
@@ -176,38 +175,23 @@ function escapar(t) {
   return d.innerHTML;
 }
 
-// Funções para rolagem automática da galeria
-function iniciarAutoScroll() {
-  const gal = $('galeria');
-  if (!gal) return;
-  let speed = 0.5; // pixels por frame (ajuste para mais/menos velocidade)
-  let rafId = null;
-  let paused = false;
+// Inicia galeria em loop infinito apenas automático (sem interação do usuário)
+function iniciarLoopCSS() {
+  const track = $('galeria-track');
+  if (!track) return;
+  // duplica o conteúdo (HTML) para permitir animação de 0 -> -50%
+  track.innerHTML = track.innerHTML + track.innerHTML;
 
-  function step() {
-    if (!paused) {
-      gal.scrollLeft += speed;
-      // quando chegar ao fim, volta pro início suavemente
-      if (gal.scrollLeft + gal.clientWidth >= gal.scrollWidth - 1) {
-        gal.scrollTo({ left: 0 });
-      }
-    }
-    rafId = requestAnimationFrame(step);
+  // opcional: ajustar duração com base na largura (mantém velocidade consistente)
+  // aqui calculamos uma duração proporcional ao número de itens e largura do item
+  const item = track.querySelector('.galeria-item');
+  if (item) {
+    const itemWidth = item.getBoundingClientRect().width + 16; // inclui gap
+    const totalItems = track.children.length;
+    // base: cada 1000px leva 6s (ajuste conforme preferir)
+    const duration = Math.max(12, Math.round((itemWidth * totalItems) / 1000 * 6));
+    track.style.animationDuration = duration + 's';
   }
-
-  gal.addEventListener('mouseenter', () => paused = true);
-  gal.addEventListener('mouseleave', () => paused = false);
-  gal.addEventListener('touchstart', () => paused = true, { passive: true });
-  gal.addEventListener('touchend', () => paused = false, { passive: true });
-
-  step();
-  return () => cancelAnimationFrame(rafId);
-}
-
-function scrollGal(amount) {
-  const gal = $('galeria');
-  if (!gal) return;
-  gal.scrollBy({ left: amount, behavior: 'smooth' });
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -217,7 +201,7 @@ window.addEventListener('DOMContentLoaded', () => {
   carregarMensagens();
   $('formMensagem').addEventListener('submit', enviarMensagem);
   $('formPagamento').addEventListener('submit', enviarPagamento);
-  iniciarAutoScroll();
+  iniciarLoopCSS();
 });
 </script>
 
@@ -250,21 +234,15 @@ window.addEventListener('DOMContentLoaded', () => {
   <h2>Galeria</h2>
   <div class="galeria-wrapper">
     <div class="galeria" id="galeria" aria-label="Galeria de fotos">
-      <div class="galeria-item"><img src="FOTO_1.jpg" alt="Foto 1"></div>
-      <div class="galeria-item"><img src="FOTO_2.jpg" alt="Foto 2"></div>
-      <div class="galeria-item"><img src="FOTO_3.jpg" alt="Foto 3"></div>
-      <div class="galeria-item"><img src="FOTO_4.jpg" alt="Foto 4"></div>
-      <div class="galeria-item"><img src="FOTO_5.jpg" alt="Foto 5"></div>
-      <div class="galeria-item"><img src="FOTO_6.jpg" alt="Foto 6"></div>
-      <div class="galeria-item"><img src="FOTO_7.jpg" alt="Foto 7"></div>
-    </div>
-    <div class="galeria-controls">
-      <button class="gal-btn" aria-label="Anterior" onclick="scrollGal(-320)">
-        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-      </button>
-      <button class="gal-btn" aria-label="Próximo" onclick="scrollGal(320)">
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-      </button>
+      <div class="galeria-track" id="galeria-track">
+        <div class="galeria-item"><img src="FOTO_1.jpg" alt="Foto 1"></div>
+        <div class="galeria-item"><img src="FOTO_2.jpg" alt="Foto 2"></div>
+        <div class="galeria-item"><img src="FOTO_3.jpg" alt="Foto 3"></div>
+        <div class="galeria-item"><img src="FOTO_4.jpg" alt="Foto 4"></div>
+        <div class="galeria-item"><img src="FOTO_5.jpg" alt="Foto 5"></div>
+        <div class="galeria-item"><img src="FOTO_6.jpg" alt="Foto 6"></div>
+        <div class="galeria-item"><img src="FOTO_7.jpg" alt="Foto 7"></div>
+      </div>
     </div>
   </div>
 </section>
