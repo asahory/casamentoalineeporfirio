@@ -43,6 +43,8 @@
   /* Galeria: loop infinito apenas automático (mais suave via transform) */
   .galeria-wrapper { position: relative; }
   .galeria {
+    overflow: hidden; /* impede rolagem manual */
+    -webkit-overflow-scrolling: touch;
     margin: 0 -6px; /* alinha com o padding interno */
   }
   .galeria-track {
