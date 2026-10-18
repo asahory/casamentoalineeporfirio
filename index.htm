@@ -114,12 +114,11 @@ function preencherTextos() {
   $('cerimonia').innerHTML = `<b>${CONFIG.cerimonia.horario}</b><br>${CONFIG.cerimonia.local}<br><span class="aviso">${CONFIG.cerimonia.endereco}</span>`;
   $('festa').innerHTML = `<b>${CONFIG.festa.horario}</b><br>${CONFIG.festa.local}<br><span class="aviso">${CONFIG.festa.endereco}</span>`;
   $('faq').innerHTML = CONFIG.faq.map(f => `<details><summary>${f.p}</summary><p>${f.r}</p></details>`).join('');
-  $('listaCotas').innerHTML = CONFIG.cotas.map(c => `
-    <div class="card cota" id="card-${c.id}">
+    $('listaCotas').innerHTML = CONFIG.cotas.map(c => `
+    <div class="card cota">
       <h3>${c.titulo}</h3>
       <p class="cota-valor">${c.valor}</p>
-      <button onclick="copiarPix('${c.id}')">Copiar Pix</button>
-      <button class="secundario" onclick="abrirPagamento('${c.id}')">Já paguei</button>
+      <a class="botao" href="pagamento.html?cota=${c.id}">Pagar</a>
     </div>`).join('');
 }
 
@@ -252,18 +251,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <section>
   <h2>Lista de Presentes</h2>
-  <p style="text-align:center" class="aviso">Escolha uma cota, copie o Pix e, depois de pagar, registre aqui para a gente saber.</p>
+  <p style="text-align:center" class="aviso">Escolha uma cota e clique em Pagar.</p>
   <div class="grid" id="listaCotas"></div>
-  <div class="card" id="formPagamento" style="margin-top:28px">
-    <h3>Registrar pagamento</h3>
-    <form id="formPagamentoForm">
-      <input id="pagNome" placeholder="Seu nome" required maxlength="80">
-      <select id="selectCota"></select>
-      <input id="pagObs" placeholder="Observação (opcional)" maxlength="200">
-      <button type="submit">Registrar</button>
-      <p class="msg-status" id="statusPag"></p>
-    </form>
-  </div>
 </section>
 
 <section>
