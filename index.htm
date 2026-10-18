@@ -90,9 +90,9 @@ const CONFIG = {
   ],
   appScriptUrl: 'https://script.google.com/macros/s/AKfycbxpKnX2C0dfr7oUL6IqFpyKeGhmQBmZ9YpaghmFoJt-vCJo3Tjj4teN1m2cXUEoTwdtJw/exec',
   cotas: [
-    { id: 'C01', titulo: 'Lua de mel - jantar', valor: 'R$ 100,00', pix: 'COLE_O_PIX_COPIA_E_COLA' },
-    { id: 'C02', titulo: 'Jantar romântico', valor: 'R$ 150,00', pix: 'COLE_O_PIX_COPIA_E_COLA' },
-    { id: 'C03', titulo: 'Passeio de barco', valor: 'R$ 200,00', pix: 'COLE_O_PIX_COPIA_E_COLA' }
+    { id: 'C01', titulo: 'Lua de mel - jantar', valor: 'R$ 100,00' },
+    { id: 'C02', titulo: 'Jantar romântico', valor: 'R$ 150,00' },
+    { id: 'C03', titulo: 'Passeio de barco', valor: 'R$ 200,00' }
   ]
 };
 
@@ -129,10 +129,6 @@ function copiarPix(id) {
   navigator.clipboard.writeText(cota.pix).then(() => alert('Código Pix copiado! Cole no app do seu banco.'));
 }
 
-function abrirPagamento(id) {
-  $('selectCota').value = id;
-  $('formPagamento').scrollIntoView({ behavior: 'smooth' });
-}
 
 async function enviar(dados) {
   const r = await fetch(CONFIG.appScriptUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(dados) });
@@ -144,16 +140,6 @@ async function enviarMensagem(e) {
   $('statusMsg').textContent = 'Enviando...';
   const res = await enviar({ acao: 'mensagem', nome: $('msgNome').value, mensagem: $('msgTexto').value });
   $('statusMsg').textContent = res.ok ? 'Mensagem enviada! Obrigado. Ela aparece aqui depois de aprovada.' : 'Não foi possível enviar. Tente novamente.';
-  if (res.ok) e.target.reset();
-}
-
-async function enviarPagamento(e) {
-  e.preventDefault();
-  const id = $('selectCota').value;
-  const cota = CONFIG.cotas.find(c => c.id === id);
-  $('statusPag').textContent = 'Enviando...';
-  const res = await enviar({ acao: 'pagamento', nome: $('pagNome').value, cota: cota.titulo, valor: cota.valor, observacao: $('pagObs').value });
-  $('statusPag').textContent = res.ok ? 'Obrigado! Registramos seu presente.' : 'Não foi possível registrar. Tente novamente.';
   if (res.ok) e.target.reset();
 }
 
