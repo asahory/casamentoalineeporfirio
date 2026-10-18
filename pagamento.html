@@ -9,20 +9,23 @@
   :root { --cor: #8a6d5a; --fundo: #fbf8f4; --texto: #3b3330; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: Montserrat, sans-serif; color: var(--texto); background: var(--fundo); line-height: 1.6; }
-  .container { max-width: 560px; margin: 0 auto; padding: 48px 20px; }
+  .container { max-width: 560px; margin: 0 auto; padding: 40px 20px; }
   h1 { font-family: 'Cormorant Garamond', serif; color: var(--cor); font-size: 2.4rem; text-align: center; margin: 0 0 8px; }
-  .subtitulo { text-align: center; color: #6b5b50; margin-bottom: 32px; }
-  .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 4px 18px rgba(0,0,0,.06); }
+  h3 { font-family: 'Cormorant Garamond', serif; color: var(--cor); margin: 0 0 12px; font-size: 1.6rem; }
+  .aviso-pix { background: var(--cor); color: #fff; text-align: center; padding: 14px 16px; border-radius: 10px; font-weight: 600; margin-bottom: 24px; }
+  .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 4px 18px rgba(0,0,0,.06); margin-bottom: 20px; }
+  .valor { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--cor); text-align: center; margin: 4px 0 0; }
+  .cota-titulo { text-align: center; margin: 0; }
   input, textarea { width: 100%; padding: 10px; border: 1px solid #d8cfc7; border-radius: 8px; font-family: inherit; margin-bottom: 14px; }
   label { font-weight: 600; font-size: .9rem; display: block; margin-bottom: 4px; }
   button { background: var(--cor); color: #fff; border: 0; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 1rem; width: 100%; }
+  button:disabled { opacity: .6; cursor: default; }
   button.secundario { background: transparent; color: var(--cor); border: 1px solid var(--cor); margin-top: 10px; }
-  .valor { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--cor); text-align: center; margin: 8px 0 20px; }
   .pix-box { word-break: break-all; background: #f5efe9; padding: 14px; border-radius: 8px; font-size: .8rem; margin: 16px 0; }
-  .aviso { font-size: .9rem; color: #6b5b50; }
+  .aviso { font-size: .9rem; color: #6b5b50; text-align: center; }
   .oculto { display: none; }
   .voltar { display: inline-block; margin-bottom: 20px; color: var(--cor); text-decoration: none; }
-  .erro { color: #a33; margin-top: 10px; }
+  .erro { color: #a33; margin-top: 10px; min-height: 1em; }
 </style>
 </head>
 <body>
@@ -48,7 +51,7 @@ function iniciar() {
   const id = new URLSearchParams(window.location.search).get('cota');
   cotaAtual = COTAS.find(c => c.id === id);
   if (!cotaAtual) {
-    $('conteudo').innerHTML = '<div class="card"><p>Presente não encontrado.</p><a href="index.html">Voltar à lista</a></div>';
+    $('conteudo').innerHTML = '<div class="card"><p>Presente não encontrado.</p><a href="index.html">Voltar à lista de presentes</a></div>';
     return;
   }
   $('tituloCota').textContent = cotaAtual.titulo;
@@ -104,15 +107,22 @@ window.addEventListener('DOMContentLoaded', iniciar);
 
 <div class="container" id="conteudo">
   <a class="voltar" href="index.html">← Voltar à lista de presentes</a>
-  <h1 id="tituloCota"></h1>
-  <p class="valor" id="valorCota"></p>
+
+  <div class="aviso-pix">Os pagamentos são feitos exclusivamente via Pix.</div>
+
+  <div class="card">
+    <p class="aviso" style="margin:0">Você escolheu o presente:</p>
+    <h1 id="tituloCota" style="font-size:1.8rem;margin-top:8px"></h1>
+    <p class="valor" id="valorCota"></p>
+  </div>
 
   <div class="card" id="etapaDados">
-    <p class="subtitulo" style="margin-top:0">Preencha seus dados e depois pague pelo Pix.</p>
+    <h3>Seus dados</h3>
     <form id="formPagamento">
       <label for="nome">Seu nome</label>
       <input id="nome" required maxlength="80">
       <label for="telefone">Telefone (WhatsApp)</label>
+      <input id="telefone" type="tel" required maxlength="20">
       <label for="observacao">Mensagem (opcional)</label>
       <textarea id="observacao" rows="3" maxlength="200"></textarea>
       <button type="submit" id="btnRegistrar">Continuar</button>
@@ -121,12 +131,11 @@ window.addEventListener('DOMContentLoaded', iniciar);
   </div>
 
   <div class="card oculto" id="etapaPix">
-    <h3 style="font-family:'Cormorant Garamond',serif;color:var(--cor);margin-top:0">Pague pelo Pix</h3>
+    <h3>Pague pelo Pix</h3>
     <p class="aviso">Copie o código abaixo e cole no app do seu banco, na opção Pix Copia e Cola.</p>
     <div class="pix-box" id="pixCodigo"></div>
     <button id="btnCopiar">Copiar código Pix</button>
     <p class="aviso" style="margin-top:20px">Muito obrigado pelo presente!</p>
-    <a class="voltar" href="index.html">Voltar à lista de presentes</a>
   </div>
 </div>
 
