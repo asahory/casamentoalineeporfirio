@@ -125,8 +125,15 @@ function preencherTextos() {
 
 
 async function enviar(dados) {
-  const r = await fetch(CONFIG.appScriptUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(dados) });
-  return r.json();
+  const params = new URLSearchParams(dados).toString();
+  try {
+    // no-cors: envia sem tentar ler a resposta, que o navegador bloqueia
+    await fetch(CONFIG.appScriptUrl + '?' + params, { mode: 'no-cors' });
+    return { ok: true };
+  } catch (err) {
+    console.error('Erro ao enviar:', err);
+    return { ok: false, erro: String(err) };
+  }
 }
 
 async function enviarMensagem(e) {
