@@ -6,7 +6,13 @@
 <title>Presente - Pagamento</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root { --cor: #8a6d5a; --fundo: #fbf8f4; --texto: #3b3330; }
+    :root {
+  --fundo: #FAF5F0;   /* fundo da página */
+  --texto: #091e05;   /* textos */
+  --cor: #7a8b63;     /* títulos, botões e destaques */
+  --cor-escura: #8fa083; /* bordas e estados secundários */
+  --acento: #a58b71;  /* detalhes, como a borda das mensagens */
+}
   * { box-sizing: border-box; }
   body { margin: 0; font-family: Montserrat, sans-serif; color: var(--texto); background: var(--fundo); line-height: 1.6; }
   .container { max-width: 560px; margin: 0 auto; padding: 40px 20px; }
@@ -38,9 +44,9 @@ const CONFIG = {
 
 // Mesmos id, titulo e valor do index.html. O pix é copia e cola do Nubank com valor fixo.
 const COTAS = [
-  { id: 'C01', titulo: 'Lua de mel - jantar', valor: 'R$ 100,00', pix: '00020126580014BR.GOV.BCB.PIX013629b8351c-6ba0-481b-a19f-5ccd70fec5f05204000053039865406100.005802BR5925Amanda Sahory Nunes Seraf6009SAO PAULO62140510BKTl0hpkhe6304FDC8' },
-  { id: 'C02', titulo: 'Jantar romântico', valor: 'R$ 150,00', pix: '00020126580014BR.GOV.BCB.PIX013629b8351c-6ba0-481b-a19f-5ccd70fec5f05204000053039865406150.005802BR5925Amanda Sahory Nunes Seraf6009SAO PAULO62140510dJrRFb1WCi63046CC7' },
-  { id: 'C03', titulo: 'Passeio de barco', valor: 'R$ 200,00', pix: '00020126580014BR.GOV.BCB.PIX013629b8351c-6ba0-481b-a19f-5ccd70fec5f05204000053039865406200.005802BR5925Amanda Sahory Nunes Seraf6009SAO PAULO62140510HOCKck5Sut63049E30' }
+  { id: 'C01', titulo: 'Lua de mel - jantar', valor: 'R$ 100,00', pix: '00020126410014BR.GOV.BCB.PIX0119yathamura@gmail.com5204000053039865406100.005802BR5925Aline Yathamura Nunes Ser6009SAO PAULO621405109MhzMZaDFH63048388' },
+  { id: 'C02', titulo: 'Jantar romântico', valor: 'R$ 150,00', pix: '00020126410014BR.GOV.BCB.PIX0119yathamura@gmail.com5204000053039865406150.005802BR5925Aline Yathamura Nunes Ser6009SAO PAULO62140510dFqkuGY3EY63042519' },
+  { id: 'C03', titulo: 'Passeio de barco', valor: 'R$ 200,00', pix: '00020126410014BR.GOV.BCB.PIX0119yathamura@gmail.com5204000053039865406200.005802BR5925Aline Yathamura Nunes Ser6009SAO PAULO62140510DApJ5y3kFm6304E401' }
 ];
 /* ====================== */
 

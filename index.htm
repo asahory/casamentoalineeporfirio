@@ -6,7 +6,13 @@
 <title>Nossa Renovação de Votos</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root { --cor: #8a6d5a; --fundo: #fbf8f4; --texto: #3b3330; }
+  :root {
+  --fundo: #FAF5F0;   /* fundo da página */
+  --texto: #091e05;   /* textos */
+  --cor: #7a8b63;     /* títulos, botões e destaques */
+  --cor-escura: #8fa083; /* bordas e estados secundários */
+  --acento: #a58b71;  /* detalhes, como a borda das mensagens */
+}
   * { box-sizing: border-box; }
   body { margin: 0; font-family: Montserrat, sans-serif; color: var(--texto); background: var(--fundo); line-height: 1.7; }
   h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0 0 16px; }
@@ -15,7 +21,7 @@
   .hero {
     min-height: 100vh; max-width: none; display: flex; flex-direction: column;
     justify-content: center; align-items: center; text-align: center;
-    background: linear-gradient(rgba(223,213,207,0.45), rgba(223,213,207,0.45)), url('FOTO_6.jpeg') center/cover no-repeat;
+    background: linear-gradient(rgba(208, 192, 177,0.45), rgba(208, 192, 177,0.45)), url('FOTO_6.jpeg') center/cover no-repeat;
     color: var(--texto);
   }
   .hero h1 { font-size: 4rem; margin: 0; }
@@ -81,9 +87,20 @@ const CONFIG = {
   noivos: 'Aline & Porfírio',
   dataCasamento: '2026-11-25T18:00:00-03:00',
   dataExibicao: '25 de novembro de 2026',
-  historia: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu tellus a velit tincidunt elementum a id magna. Integer enim quam, ultricies sit amet malesuada et, convallis ac enim. In pharetra, dolor imperdiet vehicula pharetra, massa velit euismod leo, ut suscipit orci ligula eget metus. Aliquam porttitor condimentum nibh ut convallis. Aenean consectetur lacinia ex at tempor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nam elementum dictum diam, a tempus leo tristique non. In lorem odio, suscipit eu consectetur ac, elementum eget tellus. Nullam at felis volutpat, cursus ipsum eget, bibendum est. Duis suscipit porta leo, sed scelerisque justo elementum vel. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed vel dui nec nibh dapibus bibendum sit amet ac eros.',
-  cerimonia: { horario: '18h00', local: 'Igreja São José', endereco: 'Rua, número, cidade' },
-  festa: { horario: 'Após a cerimônia', local: 'Buscapé', endereco: 'Rua, número, cidade' },
+    historia: [
+    'Nossa história começou em 2009, quando nossos caminhos se cruzaram no Atacadão. Naquele momento, talvez nem imaginássemos que Deus estava começando a escrever uma das histórias mais bonitas das nossas vidas: a nossa.',
+    'Foi em 2012 que decidimos oficializar nosso relacionamento e, desde então, começamos a construir uma história feita de amor, cumplicidade e sonhos compartilhados.',
+    'Em 2016, demos mais um passo importante: ficamos noivos. E, no dia 7 de maio de 2019, dissemos o nosso tão esperado “sim” no casamento civil, escolhendo caminhar juntos por toda a vida.',
+    'Ao longo desses anos, aprendemos que amar vai muito além dos momentos felizes. O amor também é feito de respeito, dedicação, renúncias, paciência e, acima de tudo, da escolha diária de permanecer lado a lado.',
+    'Em 2022, a vida nos levou para Manaus. Longe da nossa família, dos nossos amigos e de tudo aquilo que conhecíamos, vivemos uma fase de descobertas, desafios e muito aprendizado. Foi ali que percebemos ainda mais a força do nosso amor. Não tínhamos por perto as pessoas que sempre fizeram parte da nossa vida, mas tínhamos um ao outro. E isso fez toda a diferença.',
+    'Manaus nos ensinou que, quando existe amor verdadeiro, até os caminhos mais difíceis podem ser percorridos de mãos dadas.',
+    'Depois dessa experiência tão marcante, voltamos para a nossa terra, o nosso amado Rio Grande do Norte, trazendo na bagagem histórias, amadurecimento e a certeza de que juntos somos mais fortes.',
+    'E aqui seguimos, até quando Deus permitir, construindo novas memórias, compartilhando momentos incríveis com as pessoas que amamos e agradecendo por tudo o que vivemos.',
+    'Porque, no fim, nossa história nunca foi sobre onde estávamos, mas sobre termos um ao outro em cada lugar, em cada fase e em cada recomeço.',
+    'E se pudéssemos voltar no tempo, escolheríamos tudo outra vez. Por isso, no próximo dia 25 de novembro, com o olhar de quem caminhou até aqui e o coração de quem ainda tem muito a viver, diremos mais uma vez: <strong>Eu ainda escolho você.</strong> Porque, entre tantos caminhos que a vida poderia nos oferecer, o mais bonito sempre será aquele que escolhemos percorrer juntos.'
+  ],
+  cerimonia: { horario: '18h00', local: 'Igreja de São José', endereco: 'R. Venceslau Braz, s/n - Bom Jardim, Mossoró - RN, 59621-140',  mapa: 'https://maps.app.goo.gl/gnyhr1eSauEVwWSHA' },
+  festa: { horario: 'Após a cerimônia', local: 'Restaurante Buscapé Budd', endereco: 'Av. João da Escóssia, 257 - Nova Betânia, Mossoró - RN, 59607-330',  mapa: 'https://maps.app.goo.gl/etKDnbRACu6NhTEP9' },
   faq: [
     { p: 'Posso levar acompanhante?', r: 'Verifique o convite ou fale com a gente.' },
     { p: 'Qual o dress code?', r: 'Esporte fino.' }
@@ -110,10 +127,9 @@ function atualizarContagem() {
 function preencherTextos() {
   $('titulo').textContent = CONFIG.noivos;
   $('dataTexto').textContent = CONFIG.dataExibicao;
-  $('historia').textContent = CONFIG.historia;
-  $('cerimonia').innerHTML = `<b>${CONFIG.cerimonia.horario}</b><br>${CONFIG.cerimonia.local}<br><span class="aviso">${CONFIG.cerimonia.endereco}</span>`;
-  $('festa').innerHTML = `<b>${CONFIG.festa.horario}</b><br>${CONFIG.festa.local}<br><span class="aviso">${CONFIG.festa.endereco}</span>`;
-  $('faq').innerHTML = CONFIG.faq.map(f => `<details><summary>${f.p}</summary><p>${f.r}</p></details>`).join('');
+  $('historia').innerHTML = CONFIG.historia.map(p => `<p>${p}</p>`).join('');;
+  $('cerimonia').innerHTML = `<b>${CONFIG.cerimonia.horario}</b><br>${CONFIG.cerimonia.local}<br><span class="aviso">${CONFIG.cerimonia.endereco}</span><br><a class="botao" style="margin-top:14px" target="_blank" rel="noopener" href="${CONFIG.cerimonia.mapa}">Abrir no Maps</a>`;
+  $('festa').innerHTML = `<b>${CONFIG.festa.horario}</b><br>${CONFIG.festa.local}<br><span class="aviso">${CONFIG.festa.endereco}</span><br><a class="botao" style="margin-top:14px" target="_blank" rel="noopener" href="${CONFIG.festa.mapa}">Abrir no Maps</a>`;$('faq').innerHTML = CONFIG.faq.map(f => `<details><summary>${f.p}</summary><p>${f.r}</p></details>`).join('');
     $('listaCotas').innerHTML = CONFIG.cotas.map(c => `
     <div class="card cota">
       <h3>${c.titulo}</h3>
@@ -221,8 +237,8 @@ window.addEventListener('DOMContentLoaded', () => {
 </header>
 
 <section>
-  <h2>Nossa História</h2>
-  <p id="historia" style="text-align:center;max-width:680px;margin:auto"></p>
+  <h2>Nossa História 💕 </h2>
+  <div id="historia" class="historia"></div>
 </section>
 
 <section>
@@ -259,6 +275,17 @@ window.addEventListener('DOMContentLoaded', () => {
   <h2>Lista de Presentes</h2>
   <p style="text-align:center" class="aviso">Escolha uma cota e clique em Pagar.</p>
   <div class="grid" id="listaCotas"></div>
+</section>
+
+<section>
+  <h2>Confirme sua Presença até 20/11</h2>
+  <div class="card" style="text-align:center">
+    <p class="aviso" style="margin-top:0">Clique no botão abaixo para confirmar sua presença.</p>
+    <a class="botao" target="_blank" rel="noopener"
+       href="https://wa.me/558491121579?text=Quero%20confirmar%20minha%20presen%C3%A7a!">
+      Confirmar presença
+    </a>
+  </div>
 </section>
 
 <section>
