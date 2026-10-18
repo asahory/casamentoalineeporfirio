@@ -121,13 +121,8 @@ function preencherTextos() {
       <button onclick="copiarPix('${c.id}')">Copiar Pix</button>
       <button class="secundario" onclick="abrirPagamento('${c.id}')">Já paguei</button>
     </div>`).join('');
-  $('selectCota').innerHTML = CONFIG.cotas.map(c => `<option value="${c.id}">${c.titulo} (${c.valor})</option>`).join('');
 }
 
-function copiarPix(id) {
-  const cota = CONFIG.cotas.find(c => c.id === id);
-  navigator.clipboard.writeText(cota.pix).then(() => alert('Código Pix copiado! Cole no app do seu banco.'));
-}
 
 
 async function enviar(dados) {
