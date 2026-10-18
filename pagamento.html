@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presente - Pagamento</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --cor: #8a6d5a; --fundo: #fbf8f4; --texto: #3b3330; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Montserrat, sans-serif; color: var(--texto); background: var(--fundo); line-height: 1.6; }
+  .container { max-width: 560px; margin: 0 auto; padding: 48px 20px; }
+  h1 { font-family: 'Cormorant Garamond', serif; color: var(--cor); font-size: 2.4rem; text-align: center; margin: 0 0 8px; }
+  .subtitulo { text-align: center; color: #6b5b50; margin-bottom: 32px; }
+  .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 4px 18px rgba(0,0,0,.06); }
+  input, textarea { width: 100%; padding: 10px; border: 1px solid #d8cfc7; border-radius: 8px; font-family: inherit; margin-bottom: 14px; }
+  label { font-weight: 600; font-size: .9rem; display: block; margin-bottom: 4px; }
+  button { background: var(--cor); color: #fff; border: 0; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 1rem; width: 100%; }
+  button.secundario { background: transparent; color: var(--cor); border: 1px solid var(--cor); margin-top: 10px; }
+  .valor { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--cor); text-align: center; margin: 8px 0 20px; }
+  .pix-box { word-break: break-all; background: #f5efe9; padding: 14px; border-radius: 8px; font-size: .8rem; margin: 16px 0; }
+  .aviso { font-size: .9rem; color: #6b5b50; }
+  .oculto { display: none; }
+  .voltar { display: inline-block; margin-bottom: 20px; color: var(--cor); text-decoration: none; }
+  .erro { color: #a33; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<script>
+/* ===== EDITE AQUI ===== */
+const CONFIG = {
+  appScriptUrl: 'COLE_A_URL_DO_APPS_SCRIPT'
+};
+
+// Mesmos id, titulo e valor do index.html. O pix é copia e cola do Nubank com valor fixo.
+const COTAS = [
+  { id: 'C01', titulo: 'Lua de mel - jantar', valor: 'R$ 100,00', pix: 'COLE_O_PIX_COPIA_E_COLA' },
+  { id: 'C02', titulo: 'Jantar romântico', valor: 'R$ 150,00', pix: 'COLE_O_PIX_COPIA_E_COLA' },
+  { id: 'C03', titulo: 'Passeio de barco', valor: 'R$ 200,00', pix: 'COLE_O_PIX_COPIA_E_COLA' }
+];
+/* ====================== */
+
+const $ = id => document.getElementById(id);
+let cotaAtual = null;
+
+function iniciar() {
+  const id = new URLSearchParams(window.location.search).get('cota');
+  cotaAtual = COTAS.find(c => c.id === id);
+  if (!cotaAtual) {
+    $('conteudo').innerHTML = '<div class="card"><p>Presente não encontrado.</p><a href="index.html">Voltar à lista</a></div>';
+    return;
+  }
+  $('tituloCota').textContent = cotaAtual.titulo;
+  $('valorCota').textContent = cotaAtual.valor;
+  $('formPagamento').addEventListener('submit', registrar);
+  $('btnCopiar').addEventListener('click', copiarPix);
+}
+
+async function registrar(e) {
+  e.preventDefault();
+  $('erro').textContent = '';
+  const botao = $('btnRegistrar');
+  botao.disabled = true;
+  botao.textContent = 'Registrando...';
+
+  const params = new URLSearchParams({
+    acao: 'pagamento',
+    nome: $('nome').value,
+    telefone: $('telefone').value,
+    cota: cotaAtual.titulo,
+    valor: cotaAtual.valor,
+    observacao: $('observacao').value
+  });
+
+  try {
+    const r = await fetch(CONFIG.appScriptUrl + '?' + params.toString());
+    const res = await r.json();
+    if (!res.ok) throw new Error(res.erro || 'erro');
+    mostrarPix();
+  } catch (err) {
+    console.error(err);
+    $('erro').textContent = 'Não foi possível registrar. Tente novamente.';
+    botao.disabled = false;
+    botao.textContent = 'Continuar';
+  }
+}
+
+function mostrarPix() {
+  $('etapaDados').classList.add('oculto');
+  $('etapaPix').classList.remove('oculto');
+  $('pixCodigo').textContent = cotaAtual.pix;
+  window.scrollTo(0, 0);
+}
+
+function copiarPix() {
+  navigator.clipboard.writeText(cotaAtual.pix)
+    .then(() => alert('Código Pix copiado! Cole no app do seu banco.'))
+    .catch(() => alert('Não foi possível copiar. Selecione o código e copie manualmente.'));
+}
+
+window.addEventListener('DOMContentLoaded', iniciar);
+</script>
+
+<div class="container" id="conteudo">
+  <a class="voltar" href="index.html">← Voltar à lista de presentes</a>
+  <h1 id="tituloCota"></h1>
+  <p class="valor" id="valorCota"></p>
+
+  <div class="card" id="etapaDados">
+    <p class="subtitulo" style="margin-top:0">Preencha seus dados e depois pague pelo Pix.</p>
+    <form id="formPagamento">
+      <label for="nome">Seu nome</label>
+      <input id="nome" required maxlength="80">
+      <label for="telefone">Telefone (WhatsApp)</label>
+      <label for="observacao">Mensagem (opcional)</label>
+      <textarea id="observacao" rows="3" maxlength="200"></textarea>
+      <button type="submit" id="btnRegistrar">Continuar</button>
+      <p class="erro" id="erro"></p>
+    </form>
+  </div>
+
+  <div class="card oculto" id="etapaPix">
+    <h3 style="font-family:'Cormorant Garamond',serif;color:var(--cor);margin-top:0">Pague pelo Pix</h3>
+    <p class="aviso">Copie o código abaixo e cole no app do seu banco, na opção Pix Copia e Cola.</p>
+    <div class="pix-box" id="pixCodigo"></div>
+    <button id="btnCopiar">Copiar código Pix</button>
+    <p class="aviso" style="margin-top:20px">Muito obrigado pelo presente!</p>
+    <a class="voltar" href="index.html">Voltar à lista de presentes</a>
+  </div>
+</div>
+
+</body>
+</html>
