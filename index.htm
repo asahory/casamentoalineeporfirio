@@ -127,7 +127,6 @@ function preencherTextos() {
 async function enviar(dados) {
   const params = new URLSearchParams(dados).toString();
   try {
-    // no-cors: envia sem tentar ler a resposta, que o navegador bloqueia
     await fetch(CONFIG.appScriptUrl + '?' + params, { mode: 'no-cors' });
     return { ok: true };
   } catch (err) {
