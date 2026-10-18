@@ -70,19 +70,18 @@ async function registrar(e) {
   const params = new URLSearchParams({
     acao: 'pagamento',
     nome: $('nome').value,
+    telefone: $('telefone').value,
     cota: cotaAtual.titulo,
     valor: cotaAtual.valor,
     observacao: $('observacao').value
   });
 
   try {
-    const r = await fetch(CONFIG.appScriptUrl + '?' + params.toString());
-    const res = await r.json();
-    if (!res.ok) throw new Error(res.erro || 'erro');
+    await fetch(CONFIG.appScriptUrl + '?' + params.toString(), { mode: 'no-cors' });
     mostrarPix();
   } catch (err) {
     console.error(err);
-    $('erro').textContent = 'Não foi possível registrar. Tente novamente.';
+    $('erro').textContent = 'Não foi possível registrar. Verifique sua conexão e tente novamente.';
     botao.disabled = false;
     botao.textContent = 'Continuar';
   }
