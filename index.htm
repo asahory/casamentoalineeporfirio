@@ -6,7 +6,7 @@
 <title>Nossa Renovação de Votos</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root { --cor: #8a6d5a; --fundo: #fbf8f4; --texto: #3b3330; --scroll-duration: 30s; }
+  :root { --cor: #8a6d5a; --fundo: #fbf8f4; --texto: #3b3330; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: Montserrat, sans-serif; color: var(--texto); background: var(--fundo); line-height: 1.7; }
   h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0 0 16px; }
@@ -14,16 +14,18 @@
   section { padding: 72px 20px; max-width: 960px; margin: auto; }
   .hero {
     min-height: 100vh; max-width: none; display: flex; flex-direction: column;
-    justify-content: center; align-items: center; text-align: center; color: #fff;
-    background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.45)), url('FOTO_6.jpeg') center/cover;
+    justify-content: center; align-items: center; text-align: center;
+    background: linear-gradient(rgba(251,248,244,0.90), rgba(251,248,244,0.90)), url('FOTO_6.jpeg') center/cover no-repeat;
+    color: var(--texto);
   }
   .hero h1 { font-size: 4rem; margin: 0; }
   .hero p { font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; }
   .contagem { display: flex; gap: 18px; margin-top: 28px; }
-  .contagem div { background: rgba(255,255,255,.15); padding: 12px 16px; border-radius: 10px; min-width: 70px; }
+  .contagem div { background: rgba(255,255,255,0.75); padding: 12px 16px; border-radius: 10px; min-width: 70px; border: 1px solid rgba(0,0,0,0.04); }
   .contagem span { display: block; font-size: 1.8rem; font-family: 'Cormorant Garamond', serif; }
   .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 4px 18px rgba(0,0,0,.06); }
   .grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .galeria img { width: 100%; height: 240px; object-fit: cover; border-radius: 12px; }
   button, .botao {
     background: var(--cor); color: #fff; border: 0; padding: 10px 18px; border-radius: 8px;
     cursor: pointer; font-family: inherit; text-decoration: none; display: inline-block; font-size: .95rem;
@@ -40,12 +42,12 @@
   .oculto { display: none; }
   .msg-status { margin-top: 10px; font-weight: 600; color: var(--cor); }
 
-  /* Galeria: loop infinito apenas automático (mais suave via transform) */
+  /* Galeria em loop suave */
   .galeria-wrapper { position: relative; }
   .galeria {
-    overflow: hidden; /* impede rolagem manual */
+    overflow: hidden;
     -webkit-overflow-scrolling: touch;
-    margin: 0 -6px; /* alinha com o padding interno */
+    margin: 0 -6px;
   }
   .galeria-track {
     display: flex;
@@ -63,12 +65,13 @@
     background: #fff;
   }
   .galeria-item img { width: 100%; height: 240px; object-fit: cover; display: block; }
-
-  /* esconde interação do usuário */
   .galeria, .galeria * { pointer-events: none; }
   .galeria::-webkit-scrollbar { display: none; }
 
-  @media (max-width: 600px) { .hero h1 { font-size: 2.6rem; } .galeria-item { width: 260px; } }
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 2.6rem; }
+    .galeria-item { width: 260px; }
+  }
 </style>
 </head>
 <body>
@@ -85,17 +88,16 @@ const CONFIG = {
     { p: 'Posso levar acompanhante?', r: 'Verifique o convite ou fale com a gente.' },
     { p: 'Qual o dress code?', r: 'Esporte fino.' }
   ],
-  appScriptUrl: 'https://script.google.com/macros/s/AKfycbxpKnX2C0dfr7oUL6IqFpyKeGhmQBmZ9YpaghmFoJt-vCJo3Tjj4teN1m2cXUEoTwdtJw/exec',
-    cotas: [
-    { id: 'C01', titulo: 'Lua de mel - jantar', valor: 'R$ 100,00' },
-    { id: 'C02', titulo: 'Jantar romântico', valor: 'R$ 150,00' },
-    { id: 'C03', titulo: 'Passeio de barco', valor: 'R$ 200,00' }
+  appScriptUrl: 'https://script.google.com/macros/s/AKfycbwCTIqLYdxu2BvYH6sSdfworjKMxDLPCvFd611sGbbBTyiSBErYPrAaGi9qi7j-X4F4fQ/exec',
+  cotas: [
+    { id: 'C01', titulo: 'Lua de mel - jantar', valor: 'R$ 100,00', pix: 'COLE_O_PIX_COPIA_E_COLA' },
+    { id: 'C02', titulo: 'Jantar romântico', valor: 'R$ 150,00', pix: 'COLE_O_PIX_COPIA_E_COLA' },
+    { id: 'C03', titulo: 'Passeio de barco', valor: 'R$ 200,00', pix: 'COLE_O_PIX_COPIA_E_COLA' }
   ]
 };
 
 const $ = id => document.getElementById(id);
 
-// Contagem regressiva
 function atualizarContagem() {
   const diff = new Date(CONFIG.dataCasamento) - new Date();
   if (diff <= 0) return;
@@ -113,11 +115,24 @@ function preencherTextos() {
   $('festa').innerHTML = `<b>${CONFIG.festa.horario}</b><br>${CONFIG.festa.local}<br><span class="aviso">${CONFIG.festa.endereco}</span>`;
   $('faq').innerHTML = CONFIG.faq.map(f => `<details><summary>${f.p}</summary><p>${f.r}</p></details>`).join('');
   $('listaCotas').innerHTML = CONFIG.cotas.map(c => `
-    <div class="card cota">
+    <div class="card cota" id="card-${c.id}">
       <h3>${c.titulo}</h3>
       <p class="cota-valor">${c.valor}</p>
-      <a class="botao" href="pagamento.html?cota=${c.id}">Pagar</a>
+      <button onclick="copiarPix('${c.id}')">Copiar Pix</button>
+      <button class="secundario" onclick="abrirPagamento('${c.id}')">Já paguei</button>
     </div>`).join('');
+  $('selectCota').innerHTML = CONFIG.cotas.map(c => `<option value="${c.id}">${c.titulo} (${c.valor})</option>`).join('');
+}
+
+function copiarPix(id) {
+  const cota = CONFIG.cotas.find(c => c.id === id);
+  navigator.clipboard.writeText(cota.pix).then(() => alert('Código Pix copiado! Cole no app do seu banco.'));
+}
+
+function abrirPagamento(id) {
+  $('selectCota').value = id;
+  $('formPagamento').scrollIntoView({ behavior: 'smooth' });
+}
 
 async function enviar(dados) {
   const r = await fetch(CONFIG.appScriptUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(dados) });
@@ -129,6 +144,16 @@ async function enviarMensagem(e) {
   $('statusMsg').textContent = 'Enviando...';
   const res = await enviar({ acao: 'mensagem', nome: $('msgNome').value, mensagem: $('msgTexto').value });
   $('statusMsg').textContent = res.ok ? 'Mensagem enviada! Obrigado. Ela aparece aqui depois de aprovada.' : 'Não foi possível enviar. Tente novamente.';
+  if (res.ok) e.target.reset();
+}
+
+async function enviarPagamento(e) {
+  e.preventDefault();
+  const id = $('selectCota').value;
+  const cota = CONFIG.cotas.find(c => c.id === id);
+  $('statusPag').textContent = 'Enviando...';
+  const res = await enviar({ acao: 'pagamento', nome: $('pagNome').value, cota: cota.titulo, valor: cota.valor, observacao: $('pagObs').value });
+  $('statusPag').textContent = res.ok ? 'Obrigado! Registramos seu presente.' : 'Não foi possível registrar. Tente novamente.';
   if (res.ok) e.target.reset();
 }
 
@@ -147,49 +172,40 @@ function escapar(t) {
   return d.innerHTML;
 }
 
-// Loop suave via transform + duplicação; evita "pulo" no reinício
 function iniciarLoopSuave() {
   const track = document.getElementById('galeria-track');
   if (!track) return;
 
-  // duplica os itens (HTML) para termos sequência contínua
   track.innerHTML = track.innerHTML + track.innerHTML;
 
   const imgs = track.querySelectorAll('img');
-  // espera imagens carregarem para medir larguras corretamente
   const imgPromises = Array.from(imgs).map(img => new Promise(res => {
     if (img.complete) return res();
     img.onload = img.onerror = res;
   }));
 
   Promise.all(imgPromises).then(() => {
-    // calcula largura total do conjunto original (antes da duplicação)
     const children = Array.from(track.children);
     const half = children.length / 2;
     let totalWidth = 0;
     for (let i = 0; i < half; i++) {
       const w = children[i].getBoundingClientRect().width;
-      // gap entre itens é 16px (CSS)
       totalWidth += w + 16;
     }
 
-    // animação por requestAnimationFrame usando transform (mais suave)
     let offset = 0;
-    const speed = 0.4; // pixels por frame — ajuste para alterar velocidade
+    const speed = 0.4;
     let rafId = null;
 
     function step() {
       offset += speed;
-      if (offset >= totalWidth) offset -= totalWidth; // reinicia sem pulo
+      if (offset >= totalWidth) offset -= totalWidth;
       track.style.transform = `translateX(${-offset}px)`;
       rafId = requestAnimationFrame(step);
     }
 
-    // inicia
     track.style.willChange = 'transform';
     step();
-
-    // opcional: expõe para depuração
     track._stop = () => cancelAnimationFrame(rafId);
   });
 }
@@ -200,6 +216,9 @@ window.addEventListener('DOMContentLoaded', () => {
   setInterval(atualizarContagem, 1000);
   carregarMensagens();
   $('formMensagem').addEventListener('submit', enviarMensagem);
+  const formPag = $('formPagamento');
+  if (formPag) formPag.addEventListener('submit', enviarPagamento);
+  iniciarLoopSuave();
 });
 </script>
 
@@ -211,7 +230,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <div><span id="dias">0</span>dias</div>
     <div><span id="horas">0</span>horas</div>
     <div><span id="minutos">0</span>min</div>
-    <div><span id="segundos">0</span>seg></div>
+    <div><span id="segundos">0</span>seg</div>
   </div>
 </header>
 
@@ -252,8 +271,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <section>
   <h2>Lista de Presentes</h2>
-  <p style="text-align:center" class="aviso">Escolha uma cota e clique em Pagar.</p>
+  <p style="text-align:center" class="aviso">Escolha uma cota, copie o Pix e, depois de pagar, registre aqui para a gente saber.</p>
   <div class="grid" id="listaCotas"></div>
+  <div class="card" id="formPagamento" style="margin-top:28px">
+    <h3>Registrar pagamento</h3>
+    <form id="formPagamentoForm">
+      <input id="pagNome" placeholder="Seu nome" required maxlength="80">
+      <select id="selectCota"></select>
+      <input id="pagObs" placeholder="Observação (opcional)" maxlength="200">
+      <button type="submit">Registrar</button>
+      <p class="msg-status" id="statusPag"></p>
+    </form>
+  </div>
 </section>
 
 <section>
